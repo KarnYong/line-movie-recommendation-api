@@ -40,10 +40,24 @@ if channel_secret is None or channel_access_token is None:
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
-import pickle
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
 
-# Load movie list and cosine from pickle
-movies, cosine_overview = pickle.load(open('movies.p', 'rb'))
+# Load Dataset
+metadata = pd.read_csv('movies_metadata.csv', low_memory = False)
+metadata = metadata[:20000]
+metadata['overview'] = metadata['overview'].fillna('');
+
+# Word Vectorize
+tfidf = TfidfVectorizer(stop_words='english')
+tfidf_matrix = tfidf.fit_transform(metadata['overview'])
+
+# Create movie list and pandas series
+movies = pd.Series(metadata.index, index=metadata['title']).drop_duplicates()
+
+# Compute cosine (similarity)
+cosine_overview = linear_kernel(tfidf_matrix, tfidf_matrix)
 
 @app.route("/", methods=['GET'])
 def home():
