@@ -76,20 +76,7 @@ def callback():
 def handle_text_message(event):
     text = event.message.text
 
-    if text == 'profile':
-        if isinstance(event.source, SourceUser):
-            profile = line_bot_api.get_profile(event.source.user_id)
-            line_bot_api.reply_message(
-                event.reply_token, [
-                    TextSendMessage(text='Display name: ' + profile.display_name),
-                    TextSendMessage(text='Status message: ' + str(profile.status_message))
-                ]
-            )
-        else:
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text="Bot can't use profile API without user ID"))
-    elif str(text).lower() == 'movies':
+    if str(text).lower() == 'movies':
         image_carousel_template = ImageCarouselTemplate(columns=[
             ImageCarouselColumn(image_url='https://m.media-amazon.com/images/M/MV5BMDU2ZWJlMjktMTRhMy00ZTA5LWEzNDgtYmNmZTEwZTViZWJkXkEyXkFqcGdeQXVyNDQ2OTk4MzI@._V1_UY1200_CR87,0,630,1200_AL_.jpg',
                                 action=PostbackAction(label='Select', data='Toy Story')),
@@ -101,6 +88,15 @@ def handle_text_message(event):
         template_message = TemplateSendMessage(
             alt_text='ImageCarousel alt text', template=image_carousel_template)
         line_bot_api.reply_message(event.reply_token, template_message)
+    else:
+        text = event.message.text
+        movie_recommend = get_recommendations(text)
+        print(movie_recommend)
+        line_bot_api.reply_message(
+                    event.reply_token, [
+                        TextSendMessage(text=movie_recommend)
+                    ]
+                )
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
