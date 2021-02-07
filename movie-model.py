@@ -1,7 +1,6 @@
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
-import pickle
 
 # Load Dataset
 metadata = pd.read_csv('movies_metadata.csv', low_memory = False)
