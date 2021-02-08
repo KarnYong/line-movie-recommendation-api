@@ -15,6 +15,6 @@ def get_recommendations(title, cosine_sim=cosine_overview):
     recommend_text += '--------------'
     return recommend_text
 
-text_recomend = get_recommendations('Die Hard')
+text_recomend = get_recommendations('The Godfather')
 
 print(text_recomend)
